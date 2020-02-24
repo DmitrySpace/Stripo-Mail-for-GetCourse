@@ -1,0 +1,1 @@
+# Stripo-Mail-for-GetCourse
