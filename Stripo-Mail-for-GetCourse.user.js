@@ -13,11 +13,14 @@ window.stripoSecretKey = "9d4fb18eb9c74d95a2e868d8600d4e68";
 
 (function() {
     'use strict';
-    $('#getAnalysis').after(
-      '<a href="javascript:void(0)" onclick="$(\'.stripoTable\').show(0)" id="stripo_plugin_open" class="btn btn-success" style="margin-left: 15px; background-color: #d0d0d0!important; border-color: #b6b6b6!important;"><span class="glyphicon glyphicon-hourglass"></span> Открыть в Stripo</a>'
-    );
-
-
+  
+  $("head").append('<link href="https://gitcdn.link/repo/DmitrySpace/Stripo-Mail-for-GetCourse/master/styles.css" rel="stylesheet" type="text/css">');
+  
+  $('#getAnalysis').after(
+    '<a href="javascript:void(0)" onclick="$(\'.stripoTable\').show(0)" id="stripo_plugin_open" class="btn btn-success" style="margin-left: 15px; background-color: #d0d0d0!important; border-color: #b6b6b6!important;"><span class="glyphicon glyphicon-hourglass"></span> Открыть в Stripo</a>'
+  );
+    
+  
   function stripo_is_ready(){
     $('#stripo_plugin_open').css({
      'background-color': '#5cb85c',
