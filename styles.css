@@ -1,23 +1,23 @@
 .stripoTable{
-	display: table;
+  display: table;
   width: 100%;
   height: 100%;
-	width: calc(100% - 70px);
+  width: calc(100% - 70px);
   position: fixed;
   top:0; left:70px;
   z-index:1000000;
   background: #fff;
 }
 .stripoTableBody {
-	display: table-row-group;
+  display: table-row-group;
 }
 .stripoTableRow {
-	display: table-row;
+  display: table-row;
 }
 .stripoTableCell {
-	border: 1px solid #999999;
-	display: table-cell;
-	padding: 0;
+  border: 1px solid #999999;
+  display: table-cell;
+  padding: 0;
   border: 0;
 }
 #stripoPreviewContainer {
@@ -25,6 +25,7 @@
 }
 #stripoSettingsContainer {
   border-right: 1px solid #ddd;
+  background-color: #f6f6f6;
 }
 .stripoTable .buttons {
   position:fixed;
