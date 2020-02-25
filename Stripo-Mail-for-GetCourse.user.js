@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Stripo Mail for GetCourse
-// @version      1.0.0
-// @date         2020.02.24
+// @version      1.0.1
+// @date         2020.02.25
 // @description  Создание писем в GetCourse стало ещё проще!
 // @author       Dmitry Space
 // @match        *://*/notifications/control/mailings/update/id/*
@@ -13,14 +13,15 @@ window.stripoSecretKey = "9d4fb18eb9c74d95a2e868d8600d4e68";
 
 (function() {
     'use strict';
-  
+
+  var godofblocks_id = "stripo-godofblocks";
+
   $("head").append('<link href="https://gitcdn.link/repo/DmitrySpace/Stripo-Mail-for-GetCourse/master/styles.css" rel="stylesheet" type="text/css">');
-  
+
   $('#getAnalysis').after(
     '<a href="javascript:void(0)" onclick="$(\'.stripoTable\').show(0)" id="stripo_plugin_open" class="btn btn-success" style="margin-left: 15px; background-color: #d0d0d0!important; border-color: #b6b6b6!important;"><span class="glyphicon glyphicon-hourglass"></span> Открыть в Stripo</a>'
   );
-    
-  
+
   function stripo_is_ready(){
     $('#stripo_plugin_open').css({
      'background-color': '#5cb85c',
@@ -51,7 +52,9 @@ window.stripoSecretKey = "9d4fb18eb9c74d95a2e868d8600d4e68";
     var currentbody = false;
     var currentstyles = false;
     if (/es-wrapper/.test(currentmail)) {
-      currentbody = currentmail.replace(/(<style[\s\S]+?>[\s\S]+?<\/style>)/gm, "");
+      var godofblocks_div_regexp = new RegExp('(<div id="'+godofblocks_id+'"[\s\S]*?>)', 'gm');
+      currentbody = currentmail.replace(/(<\/div><style[\s\S]+?>[\s\S]+?<\/style>)/gm, "");
+      currentbody = currentbody.replace(godofblocks_div_regexp, "");
       currentbody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta charset="UTF-8"><meta content="width=device-width, initial-scale=1" name="viewport"><meta name="x-apple-disable-message-reformatting"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta content="telephone=no" name="format-detection"><title></title><!--[if (mso 16)]><style type="text/css"> a {text-decoration: none;}</style><![endif]--><!--[if gte mso 9]><style>sup { font-size: 100% !important; }</style><![endif]--></head><body>'+currentbody+'</body></html>';
       currentstyles = /<style[\s\S]+?>([\s\S]+?)<\/style>/gm.exec(currentmail).pop();
     }
@@ -83,14 +86,15 @@ window.stripoSecretKey = "9d4fb18eb9c74d95a2e868d8600d4e68";
   });
 
 addJS_Node (null, "https://plugins.stripo.email/static/latest/stripo.js", null, stripo_is_ready);
+addJS_Node (null, "https://cdn.rawgit.com/jotform/css.js/master/css.min.js", null, stripo_is_ready);
 
 $('body').on("click",'#stripo_plugin_save', function() {
-$('.loadingio-spinner-rolling-q3qw3bv5npn').css('display','inline-block');
-window.StripoApi.getTemplate(function(html, css, width, height) {
-  var styles = css;
-  var body_style = /<body style="(((?!")[\s\S]+?)+?)"/gm.test(html) ? /<body style="(((?!")[\s\S]+?)+?)"/gm.exec(html).pop() : "";
-  var body = /<body[\s\S]+?>([\s\S]+?)<\/body>/gm.test(html) ? /<body[\s\S]+?>([\s\S]+?)<\/body>/gm.exec(html).pop() : "";
-  var code = body+'<style type="text/css">'+styles+'</style>'; //body {'+body_style+'}
+  $('.loadingio-spinner-rolling-q3qw3bv5npn').css('display','inline-block');
+  window.StripoApi.getTemplate(function(html, css, width, height) {
+    var styles = css_to_js_array(godofblocks_id, css);
+    var body_style = /<body style="(((?!")[\s\S]+?)+?)"/gm.test(html) ? /<body style="(((?!")[\s\S]+?)+?)"/gm.exec(html).pop() : "";
+    var body = /<body[\s\S]+?>([\s\S]+?)<\/body>/gm.test(html) ? /<body[\s\S]+?>([\s\S]+?)<\/body>/gm.exec(html).pop() : "";
+    var code = '<div id="'+godofblocks_id+'" styles="position:absolute;width:100%;height:100%;">'+body+'</div><style type="text/css">'+styles+'</style>'; //body {'+body_style+'}
 
 /*window.StripoApi.compileEmail(function(error, html, ampHtml, ampErrors) {
   var styles = /<style type="text\/css">((?:(?!<!--|-->)[\s\S])+?)<\/style>(?!<!\[endif\]-->)/gm.exec(html).pop();
@@ -98,9 +102,9 @@ window.StripoApi.getTemplate(function(html, css, width, height) {
   var body = /<body[\s\S]+?>([\s\S]+?)<\/body>/gm.exec(html).pop();
   var code = body+'<style type="text/css">'+styles+'</style>'; //body {'+body_style+'}
 */
-  $('#Mailing_content, div.note-editable').val(code).html(code);
-  $('.loadingio-spinner-rolling-q3qw3bv5npn').css('display','none');
-}, false);
+    $('#Mailing_content, div.note-editable').val(code).html(code);
+    $('.loadingio-spinner-rolling-q3qw3bv5npn').css('display','none');
+  }, false);
 });
 
 
@@ -117,6 +121,49 @@ function addJS_Node (text, s_URL, funcToRun, runOnLoad) {
 
     var targ = D.getElementsByTagName ('head')[0] || D.body || D.documentElement;
     targ.appendChild (scriptNode);
+}
+
+function css_to_js_array(godofblocks, cssString) {
+    godofblocks = "#"+godofblocks;
+    var parser = new cssjs();
+    var parsed = parser.parseCSS(cssString);
+    var styles = "";
+    var selector = "";
+
+    $.each(parsed, function( index, value ) {
+     if(value["type"]){
+      if(value["type"] == "keyframes" || value["type"] == "imports"){
+        styles += value["styles"]+"\n";
+      }
+      if(value["type"] == "media"){
+        styles += value["selector"]+" {\n";
+        $.each(value["subStyles"], function( index2, value2 ) {
+          styles += "  ";
+          selector = value2["selector"].split(",").join(", "+godofblocks+" ");
+          styles += godofblocks+" "+selector+" {\n";
+          $.each(value2["rules"], function( index3, value3 ) {
+            if(value3["directive"] != "" && value3["value"] != "") {
+              styles += "    ";
+              styles += value3["directive"]+":"+value3["value"]+";\n";
+            }
+          });
+          styles += "  }\n";
+        });
+        styles += "}\n";
+      }
+     } else {
+      selector = value["selector"].split(",").join(", "+godofblocks+" ");
+      styles += godofblocks+" "+selector+" {\n";
+      $.each(value["rules"], function( index3, value3 ) {
+        if(value3["directive"] != "" && value3["value"] != "") {
+          styles += "  ";
+          styles += value3["directive"]+":"+value3["value"]+";\n";
+        }
+      });
+      styles += "}\n";
+     }
+    });
+    return styles;
 }
 
 })();
