@@ -20,6 +20,9 @@
   padding: 0;
   border: 0;
 }
+.stripoTable .bootstrap-select {
+  z-index: 1000001;
+}
 #stripoPreviewContainer {
   padding-top:41px;
 }
