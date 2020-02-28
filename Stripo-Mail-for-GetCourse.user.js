@@ -7,6 +7,7 @@
 // @match        *://*/notifications/control/mailings/update/id/*
 // @require      https://cdn.jsdelivr.net/gh/jotform/css.js@master/css.min.js
 // @grant        none
+// @noframes
 // ==/UserScript==
 
 window.stripoPluginId = "8f6857f29add40cfafab84c88c1d0516";
