@@ -19,6 +19,8 @@ window.stripoSecretKey = "9d4fb18eb9c74d95a2e868d8600d4e68";
     '<a href="javascript:void(0)" id="stripo_plugin_open" class="btn btn-success" style="margin-left: 15px;"><span class="glyphicon glyphicon-tasks"></span> Открыть Stripo</a>'
   );
 
+  $('head').append("<style>#stripoPluginIFrame{position:fixed;top:0;left:0;height:100%;width:100%;}</style>");
+
   window.stripoCurrentLetterCode = "";
   if($("#stripo-godofblocks").length > 0) {
     window.stripoCurrentLetterCode = $('div.note-editable').html();
