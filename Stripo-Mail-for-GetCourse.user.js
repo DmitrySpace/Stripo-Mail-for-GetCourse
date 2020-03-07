@@ -144,6 +144,8 @@ window.stripoSecretKey = "9d4fb18eb9c74d95a2e868d8600d4e68";
             );
             $("#stripoLetterIFrame")[0].contentWindow.document.open()
             $("#stripoLetterIFrame")[0].contentWindow.document.write(code);
+            $("#stripoLetterIFrame")[0].contentWindow.document.close();
+            autoResizeIFrameInit("#stripoLetterIFrame");
             $('#stripoPluginIFrame').contents().find('.loadingio-spinner-rolling-q3qw3bv5npn').css('display','none');
 
             if($(".note-toolbar-disabled-by-stripo").length == 0) {
@@ -211,13 +213,17 @@ window.stripoSecretKey = "9d4fb18eb9c74d95a2e868d8600d4e68";
     )
   }
 
-  $('#stripoLetterIFrame').on("load resize", function() {
-    $(this).contents().find('body').css(
-      {"min-height" : "100", "overflow" : "hidden", "margin" : "0", "padding" : 0});
-    setTimeout(autoResizeIFrame(this), 0);
-    setTimeout(autoResizeIFrame(this), 2000);
-    setTimeout(autoResizeIFrame(this), 10000);
-  });
+  function autoResizeIFrameInit(that) {
+    $(that).contents().find('body').css({
+        "min-height" : "100",
+        "overflow" : "hidden",
+        "margin" : "0",
+        "padding" : "0"
+    });
+    setTimeout(autoResizeIFrame(that), 0);
+  }
+
+  $('#stripoLetterIFrame').on("load resize", function(){autoResizeIFrameInit(this)});
 
    function mainpagestyles() { return `
 #stripoPluginIFrame{
